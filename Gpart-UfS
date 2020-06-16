@@ -1,0 +1,7 @@
+gpart destroy -F /dev/da0
+
+gpart create -s gpt /dev/da0
+
+gpart add -t freebsd-ufs /dev/da0
+
+newfs /dev/da0p1
