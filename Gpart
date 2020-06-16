@@ -1,0 +1,7 @@
+gpart destroy -F /dev/da0
+
+gpart create -s mbr /dev/da0
+
+gpart add -t fat32 /dev/da0
+
+newfs_msdos -L FILES -F 32 /dev/da0s1
