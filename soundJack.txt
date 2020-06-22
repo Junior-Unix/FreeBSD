@@ -1,0 +1,5 @@
+Direto no terminal
+#Pra usar fones de ouvidos:
+sysctl hw.snd.default_unit=1
+#Pra usar audio do PC:
+sysctl hw.snd.default_unit=0
