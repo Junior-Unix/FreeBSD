@@ -1,0 +1,1 @@
+/mnt/	-alldirs -maproot=root serverBSD 192.168.1.3 dog 192.168.1.5 
