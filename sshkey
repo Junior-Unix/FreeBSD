@@ -49,4 +49,10 @@ $ ssh -T git@github.com
 # Attempts to ssh to GitHub
 
 A chave privada é armazenada no arquivo ~/.ssh/id_rsa e a chave pública é armazenada no arquivo ~/.ssh/id_rsa.pub. A chave 
-publica deve ser copiada para ~/.ssh/ authorized_keys na máquina remota para que a autenticação baseada em chave funcione.
+publica deve ser copiada para ~/.ssh/authorized_keys na máquina remota para que a autenticação baseada em chave funcione.
+
+Comando:
+scp ~/.ssh/id_rsa.pub user@ip_remoto:~/.ssh/authorized_keys
+
+# Isso irá inserir, modificando o nome de "is_rsa.pub" para "authorized_keys", a troca de nome dos arquivos é uma exigência do 
+sistema, a saber, FreeBSD.
