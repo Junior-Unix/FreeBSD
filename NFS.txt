@@ -1,55 +1,64 @@
 29.3. Network File System (NFS) Reorganizado e aprimorado por Tom Rhodes. Escrito por Bill Swingle.
 
-O FreeBSD suporta o Network File System (NFS), que permite que um servidor compartilhe diretórios e arquivos com clientes através de uma rede. Com o NFS, os usuários e programas podem acessar arquivos em sistemas 
-remotos como se estivessem armazenados localmente.
+O FreeBSD suporta o Network File System (NFS), que permite que um servidor compartilhe diretórios e arquivos com clientes através de uma 
+rede. Com o NFS, os usuários e programas podem acessar arquivos em sistemas remotos como se estivessem armazenados localmente.
 
 NFS tem muitos usos práticos. Alguns dos usos mais comuns incluem:
 
     Os dados que seriam duplicados em cada cliente podem ser mantidos em um único local e acessados por clientes na rede.
 
-    Vários clientes podem precisar de acesso ao diretório /usr/ports/distfiles. Compartilhar esse diretório permite acesso rápido aos arquivos fonte sem precisar baixá-los para cada cliente.
+    Vários clientes podem precisar de acesso ao diretório /usr/ports/distfiles. Compartilhar esse diretório permite acesso rápido aos 
+    arquivos fonte sem precisar baixá-los para cada cliente.
 
-    Em grandes redes, geralmente é mais conveniente configurar um servidor central NFS no qual todos os diretórios home dos usuários são armazenados. Os usuários podem logar em um cliente em qualquer lugar da rede e 
-    ter acesso aos seus diretórios home.
+    Em grandes redes, geralmente é mais conveniente configurar um servidor central NFS no qual todos os diretórios home dos usuários são 
+    armazenados. Os usuários podem logar em um cliente em qualquer lugar da rede e ter acesso aos seus diretórios home.
 
-    A administração de exports do NFS é simplificada. Por exemplo, há apenas um sistema de arquivos no qual as políticas de segurança ou de backup devem ser definidas.
+    A administração de exports do NFS é simplificada. Por exemplo, há apenas um sistema de arquivos no qual as políticas de segurança ou 
+    de backup devem ser definidas.
 
-    Dispositivos removíveis de armazenamento de mídia podem ser usados por outras máquinas na rede. Isso reduz o número de dispositivos em toda a rede e fornece um local centralizado para gerenciar sua segurança. 
-    Geralmente, é mais conveniente instalar software em várias máquinas a partir de uma mídia de instalação centralizada.
+    Dispositivos removíveis de armazenamento de mídia podem ser usados por outras máquinas na rede. Isso reduz o número de dispositivos em 
+    toda a rede e fornece um local centralizado para gerenciar sua segurança. Geralmente, é mais conveniente instalar software em várias 
+    máquinas a partir de uma mídia de instalação centralizada.
 
-O NFS consiste em um servidor e um ou mais clientes. O cliente acessa remotamente os dados armazenados na máquina do servidor. Para que isso funcione corretamente, alguns processos precisam ser configurados e 
-executados.
+O NFS consiste em um servidor e um ou mais clientes. O cliente acessa remotamente os dados armazenados na máquina do servidor. Para que isso 
+funcione corretamente, alguns processos precisam ser configurados e executados.
 
-Esses daemons devem estar em execução no servidor: Daemon Descrição nfsd O daemon NFS que atende a solicitações de clientes NFS. mountd O daemon de montagem do NFS que realiza solicitações recebidas do nfsd. rpcbind 
-Este daemon permite que clientes NF descubram qual porta o servidor NFS está usando.
+Esses daemons devem estar em execução no servidor: Daemon Descrição nfsd O daemon NFS que atende a solicitações de clientes NFS. mountd 
+O daemon de montagem do NFS que realiza solicitações recebidas do nfsd. rpcbind Este daemon permite que clientes NF descubram qual porta o 
+servidor NFS está usando.
 
 A execução de nfsiod(8) no cliente pode melhorar o desempenho, mas não é necessária. 29.3.1. Configurando o Servidor
 
-Os sistemas de arquivos que o servidor NFS irá compartilhar são especificados no arquivo /etc/exports. Cada linha neste arquivo especifica um sistema de arquivos a ser exportado, quais clientes têm acesso a esse 
-sistema de arquivos e quaisquer opções de acesso. Ao adicionar entradas a este arquivo, cada sistema de arquivos exportado, suas propriedades e hosts permitidos devem ocorrer em uma única linha. Se nenhum cliente 
-estiver listado na entrada, qualquer cliente na rede poderá montar esse sistema de arquivos.
+Os sistemas de arquivos que o servidor NFS irá compartilhar são especificados no arquivo /etc/exports. Cada linha neste arquivo especifica 
+um sistema de arquivos a ser exportado, quais clientes têm acesso a esse sistema de arquivos e quaisquer opções de acesso. Ao adicionar 
+entradas a este arquivo, cada sistema de arquivos exportado, suas propriedades e hosts permitidos devem ocorrer em uma única linha. Se nenhum 
+cliente estiver listado na entrada, qualquer cliente na rede poderá montar esse sistema de arquivos.
 
-As seguintes entradas no arquivo /etc/exports demonstram como exportar sistemas de arquivos. Os exemplos podem ser modificados para corresponder aos sistemas de arquivos e nomes de clientes na rede do leitor. Existem 
-muitas opções que podem ser usadas neste arquivo, mas apenas algumas serão mencionadas aqui. Veja exports(5) para a lista completa de opções.
+As seguintes entradas no arquivo /etc/exports demonstram como exportar sistemas de arquivos. Os exemplos podem ser modificados para 
+corresponder aos sistemas de arquivos e nomes de clientes na rede do leitor. Existem muitas opções que podem ser usadas neste arquivo, mas 
+apenas algumas serão mencionadas aqui. Veja exports(5) para a lista completa de opções.
 
 Este exemplo mostra como exportar /cdrom para três hosts chamados alpha, bravo e charlie:
 
 /cdrom -ro alpha bravo charlie
 
-A flag -ro torna o sistema de arquivos somente leitura, impedindo que os clientes façam alterações no sistema de arquivos exportado. Este exemplo assume que os nomes de host estão no DNS ou no arquivo /etc/hosts. 
-Consulte hosts(5) se a rede não tiver um servidor de DNS.
+A flag -ro torna o sistema de arquivos somente leitura, impedindo que os clientes façam alterações no sistema de arquivos exportado. Este 
+exemplo assume que os nomes de host estão no DNS ou no arquivo /etc/hosts. Consulte hosts(5) se a rede não tiver um servidor de DNS.
 
-O próximo exemplo exporta /home para três clientes pelo endereço IP. Isso pode ser útil para redes sem DNS ou /etc/hosts. A flag -alldirs permite que os subdiretórios sejam pontos de montagem. Em outras palavras, ele 
-não montará automaticamente os subdiretórios, mas permitirá que o cliente monte os diretórios necessários conforme necessário.
+O próximo exemplo exporta /home para três clientes pelo endereço IP. Isso pode ser útil para redes sem DNS ou /etc/hosts. A flag -alldirs 
+permite que os subdiretórios sejam pontos de montagem. Em outras palavras, ele não montará automaticamente os subdiretórios, mas 
+permitirá que o cliente monte os diretórios necessários conforme necessário.
 
 /usr/home -alldirs 10.0.0.2 10.0.0.3 10.0.0.4
 
-Este próximo exemplo exporta /a para que dois clientes de domínios diferentes possam acessar esse sistema de arquivos. -maproot=root permite que o usuário root no sistema remoto grave os dados no sistema de arquivos 
-exportado como root. Se -maproot=root não for especificado, o usuário root do cliente será mapeado para a conta nobody do servidor e estará sujeito às limitações de acesso definidas para nobody.
+Este próximo exemplo exporta /a para que dois clientes de domínios diferentes possam acessar esse sistema de arquivos. -maproot=root permite 
+que o usuário root no sistema remoto grave os dados no sistema de arquivos exportado como root. Se -maproot=root não for especificado, o 
+usuário root do cliente será mapeado para a conta nobody do servidor e estará sujeito às limitações de acesso definidas para nobody.
 
 /a -maproot=root host.example.com box.example.org
 
-Um cliente só pode ser especificado uma vez por sistema de arquivos. Por exemplo, se /usr for um único sistema de arquivos, essas entradas serão inválidas, já que ambas as entradas especificam o mesmo host:
+Um cliente só pode ser especificado uma vez por sistema de arquivos. Por exemplo, se /usr for um único sistema de arquivos, essas entradas 
+serão inválidas, já que ambas as entradas especificam o mesmo host:
 
 # Invalid when /usr is one file system
 /usr/src client /usr/ports client
@@ -73,8 +82,8 @@ O servidor pode ser iniciado agora executando este comando:
 
 # service nfsd start
 
-Sempre que o servidor NFS for iniciado, o mountd também é iniciado automaticamente. No entanto, mountd lê apenas /etc/exports quando é iniciado. Para fazer as edições subsequentes de /etc/exports entrarem em vigor 
-imediatamente, force mountd para ler novamente:
+Sempre que o servidor NFS for iniciado, o mountd também é iniciado automaticamente. No entanto, mountd lê apenas /etc/exports quando é 
+iniciado. Para fazer as edições subsequentes de /etc/exports entrarem em vigor imediatamente, force mountd para ler novamente:
 
 # service mountd reload
 
@@ -88,8 +97,8 @@ Em seguida, execute este comando em cada cliente NFS:
 
 # service nfsclient start
 
-O cliente agora tem tudo de que precisa para montar um sistema de arquivos remoto. Nestes exemplos, o nome do servidor é server e o nome do cliente é client. Para montar /home no server para o ponto de montagem /mnt no 
-client:
+O cliente agora tem tudo de que precisa para montar um sistema de arquivos remoto. Nestes exemplos, o nome do servidor é server e o nome do 
+cliente é client. Para montar /home no server para o ponto de montagem /mnt no client:
 
 # mount server:/home /mnt
 
@@ -101,7 +110,8 @@ server:/home /mnt nfs rw 0 0
 
 Consulte fstab(5) para obter uma descrição de todas as opções disponíveis. 29.3.3. Bloqueando
 
-Alguns aplicativos exigem o bloqueio de arquivos para funcionar corretamente. Para ativar o bloqueio, adicione estas linhas ao arquivo /etc/rc.conf no cliente e no servidor:
+Alguns aplicativos exigem o bloqueio de arquivos para funcionar corretamente. Para ativar o bloqueio, adicione estas linhas ao arquivo 
+/etc/rc.conf no cliente e no servidor:
 
 rpc_lockd_enable="YES" rpc_statd_enable="YES"
 
@@ -109,27 +119,32 @@ Então inicie as aplicações:
 
 # service lockd start service statd start
 
-Se o bloqueio não for necessário no servidor, o cliente NFS pode ser configurado para bloquear localmente incluindo -L ao executar o mount. Consulte mount_nfs(8) para mais detalhes. 29.3.4. Automatizando Montagens com 
-autofs(5) Nota:
+Se o bloqueio não for necessário no servidor, o cliente NFS pode ser configurado para bloquear localmente incluindo -L ao executar o mount. 
+Consulte mount_nfs(8) para mais detalhes. 29.3.4. Automatizando Montagens com autofs(5) Nota:
 
-O recurso de montagem automática autofs(5) é suportado a partir do FreeBSD 10.1-RELEASE. Para usar a funcionalidade automounter em versões mais antigas do FreeBSD, use amd(8). Este capítulo descreve apenas o montador 
-automático autofs(5).
+O recurso de montagem automática autofs(5) é suportado a partir do FreeBSD 10.1-RELEASE. Para usar a funcionalidade automounter em versões 
+mais antigas do FreeBSD, use amd(8). Este capítulo descreve apenas o montador automático autofs(5).
 
-O recurso autofs(5) é um nome comum para vários componentes que, juntos, permitem a montagem automática de sistemas de arquivos locais e remotos sempre que um arquivo ou diretório dentro desse sistema de arquivos é 
-acessado. Ele consiste no componente do kernel, autofs(5) e vários aplicativos no espaço do usuário: automount(8), automountd(8) e autounmountd(8). Ele serve como uma alternativa para amd(8) de versões anteriores do 
-FreeBSD. Amd ainda é fornecido para fins de compatibilidade com versões anteriores, já que os dois usam formato de mapeamento diferentes; o usado pelo autofs é o mesmo que com outros automontadores do SVR4, como os do 
-Solaris, MacOS X e Linux.
+O recurso autofs(5) é um nome comum para vários componentes que, juntos, permitem a montagem automática de sistemas de arquivos locais e 
+remotos sempre que um arquivo ou diretório dentro desse sistema de arquivos é acessado. Ele consiste no componente do kernel, autofs(5) e 
+vários aplicativos no espaço do usuário: automount(8), automountd(8) e autounmountd(8). Ele serve como uma alternativa para amd(8) de 
+versões anteriores do FreeBSD. Amd ainda é fornecido para fins de compatibilidade com versões anteriores, já que os dois usam formato de 
+mapeamento diferentes; o usado pelo autofs é o mesmo que com outros automontadores do SVR4, como os do Solaris, MacOS X e Linux.
 
-O sistema de arquivos virtual autofs(5) é montado em pontos de montagem especificados por automount(8), geralmente chamado durante a inicialização.
+O sistema de arquivos virtual autofs(5) é montado em pontos de montagem especificados por automount(8), geralmente chamado durante a 
+inicialização.
 
-Sempre que um processo tentar acessar o arquivo dentro do ponto de montagem autofs(), o kernel notificará o daemon automountd(8) e irá pausar o processo de disparo. O daemon automountd(8) processará as solicitações do 
-kernel localizando o mapeamento apropriado e irá montar o sistema de arquivos de acordo com ele, então sinaliza ao kernel para liberar o processo bloqueado . O daemon autounmountd(8) desmonta automaticamente os 
-sistemas de arquivos montados automaticamente após algum tempo, a menos que eles ainda estejam sendo usados.
+Sempre que um processo tentar acessar o arquivo dentro do ponto de montagem autofs(), o kernel notificará o daemon automountd(8) e irá 
+pausar o processo de disparo. O daemon automountd(8) processará as solicitações do kernel localizando o mapeamento apropriado e irá montar 
+o sistema de arquivos de acordo com ele, então sinaliza ao kernel para liberar o processo bloqueado . O daemon autounmountd(8) desmonta 
+automaticamente os sistemas de arquivos montados automaticamente após algum tempo, a menos que eles ainda estejam sendo usados.
 
-O arquivo de configuração principal do autofs é o /etc/auto_master. Atribui mapeamentos individuais a montagens de nível superior. Para uma explicação do auto_master e da sintaxe do mapeamento, consulte auto_master(5).
+O arquivo de configuração principal do autofs é o /etc/auto_master. Atribui mapeamentos individuais a montagens de nível superior. Para 
+uma explicação do auto_master e da sintaxe do mapeamento, consulte auto_master(5).
 
-Existe um mapeamento especial montado automaticamente em /net. Quando um arquivo é acessado dentro desse diretório, o autofs(5) procura a montagem remota correspondente e monta-a automaticamente. Por exemplo, uma 
-tentativa de acessar um arquivo dentro de /net/foobar/usr informaria automountd(8) para montar a exportação /usr do host foobar. Exemplo 29.2. Montando uma Exportação com autofs(5)
+Existe um mapeamento especial montado automaticamente em /net. Quando um arquivo é acessado dentro desse diretório, o autofs(5) procura a 
+montagem remota correspondente e monta-a automaticamente. Por exemplo, uma tentativa de acessar um arquivo dentro de /net/foobar/usr 
+informaria automountd(8) para montar a exportação /usr do host foobar. Exemplo 29.2. Montando uma Exportação com autofs(5)
 
 Neste exemplo, showmount -e mostra os sistemas de arquivos exportados que podem ser montados a partir do servidor NFS, foobar:
 
@@ -138,8 +153,8 @@ Exports list on foobar: /usr 10.10.10.0 /a 10.10.10.0
 % cd /net/foobar/usr
 
 
-A saída de showmount mostra /usr como uma exportação. Ao alterar os diretórios para /host/foobar/usr, o automountd(8) intercepta o pedido e tenta resolver o nome do host foobar. Se for bem-sucedido, automountd(8) 
-montará automaticamente a exportação de origem.
+A saída de showmount mostra /usr como uma exportação. Ao alterar os diretórios para /host/foobar/usr, o automountd(8) intercepta o pedido 
+e tenta resolver o nome do host foobar. Se for bem-sucedido, automountd(8) montará automaticamente a exportação de origem.
 
 Para habilitar autofs(5) no momento da inicialização, adicione esta linha ao arquivo /etc/rc.conf:
 
@@ -149,6 +164,7 @@ Em seguida, autofs(5) pode ser iniciado executando:
 
 # service automount start service automountd start service autounmountd start
 
-O formato de mapeamento de autofs(5) é o mesmo que em outros sistemas operacionais. Informações sobre este formato de outras fontes podem ser úteis, como o documento do Mac OS X.
+O formato de mapeamento de autofs(5) é o mesmo que em outros sistemas operacionais. Informações sobre este formato de outras fontes podem 
+ser úteis, como o documento do Mac OS X.
 
 Consulte as páginas de manuais automount(8), automountd(8), autounmountd(8) e auto_master(5) para maiores informações.
