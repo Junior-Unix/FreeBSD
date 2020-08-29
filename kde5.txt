@@ -1,0 +1,49 @@
+O KDE é outro ambiente de trabalho fácil de usar. Essa área de trabalho fornece um 
+conjunto de aplicativos com aparência e comportamento consistentes, um menu e barras de 
+ferramentas padronizadas, atalhos de teclado, esquemas de cores, internacionalização e uma 
+configuração de área de trabalho centralizada e orientada a diálogos. Mais informações 
+sobre o KDE podem ser encontradas em http://www.kde.org/. Para informações específicas do 
+FreeBSD, consulte http://freebsd.kde.org.
+
+Para instalar o pacote KDE, digite:
+
+# pkg install x11/kde5
+
+Para instalar o KDE via ports, use o seguinte comando. A instalação do ports fornecerá um 
+menu para selecionar quais componentes instalar. O KDE é um aplicativo grande e levará 
+algum tempo para compilar, mesmo em um computador rápido.
+
+# cd /usr/ports/x11/kde5 make install clean
+
+O KDE requer que o /proc esteja montado. Adicione esta linha ao /etc/fstab para montar 
+este sistema de arquivos automaticamente durante a inicialização do sistema:
+
+proc /proc procfs rw 0 0
+
+O KDE usa o D-Bus e o HAL para barramento de mensagens e abstração de hardware. Estas 
+aplicações são automaticamente instaladas como dependências do KDE. Habilite-os em 
+/etc/rc.conf para que eles sejam iniciados quando o sistema inicializar:
+
+dbus_enable="YES" hald_enable="YES"
+
+Desde o KDE Plasma 5, o Gerenciador de Display do KDE, KDM, não é mais desenvolvido. Uma 
+possível substituição é o SDDM. Para instalá-lo, digite:
+
+# pkg install x11/sddm
+
+Adicione esta linha em /etc/rc.conf:
+
+sddm_enable="YES"
+
+Um segundo método para iniciar o KDE Plasma é digitar startx na linha de comando. Para que 
+isso funcione, a seguinte linha é necessária em ~/.xinitrc:
+
+exec ck-launch-session startplasma-x11
+
+Um terceiro método para iniciar o KDE Plasma é através do XDM. Para fazer isso, crie um 
+arquivo executável ~/.xsession da seguinte maneira:
+
+% echo "exec ck-launch-session startplasma-x11" > ~/.xsession
+
+Uma vez iniciado o KDE Plasma , consulte o sistema de ajuda integrado para obter mais 
+informações sobre como usar seus diversos menus e aplicativos.

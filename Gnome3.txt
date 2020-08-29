@@ -1,0 +1,51 @@
+O GNOME é um ambiente de área de trabalho amigável. Ele inclui um painel para iniciar 
+aplicativos e exibir status, uma área de trabalho, um conjunto de ferramentas e 
+aplicativos e um conjunto de convenções que facilitam a cooperação entre os aplicativos e 
+a compatibilidade entre eles. Mais informações sobre o GNOME no FreeBSD podem ser 
+encontradas em https://www.FreeBSD.org/gnome. Esse site contém documentação adicional 
+sobre instalação, configuração e gerenciamento do GNOME no FreeBSD.
+
+Este ambiente de desktop pode ser instalado a partir de um pacote binario:
+
+# pkg install gnome3
+
+Para instalar o GNOME a partir do ports, use o seguinte comando. O GNOME é um aplicativo 
+grande e levará algum tempo para compilar, mesmo em um computador rápido.
+
+# cd /usr/ports/x11/gnome3 make install clean
+
+O GNOME requer que o /proc seja montado. Adicione esta linha ao /etc/fstab para montar 
+este sistema de arquivos automaticamente durante a inicialização do sistema:
+
+proc /proc procfs rw 0 0
+
+O GNOME usa o D-Bus e o HAL para barramento de mensagens e abstração de hardware. Esses 
+aplicativos são instalados automaticamente como dependências do GNOME. Habilite-os em 
+/etc/rc.conf para que eles sejam iniciados quando o sistema inicializar:
+
+dbus_enable="YES" hald_enable="YES"
+
+Após a instalação, configure o Xorg para iniciar o GNOME. A maneira mais fácil de fazer 
+isso é habilitar o Gerenciador de Display do GNOME, o GDM, que é instalado como parte do 
+pacote ou ports do GNOME. Pode ser ativado adicionando esta linha ao /etc/rc.conf:
+
+gdm_enable="YES"
+
+Geralmente é desejável também iniciar todos os serviços do GNOME. Para conseguir isso, 
+adicione uma segunda linha ao /etc/rc.conf:
+
+gnome_enable="YES"
+
+O GDM será iniciado automaticamente quando o sistema for inicializado.
+
+Um segundo método para iniciar o GNOME é digitar startx na linha de comando depois de 
+configurar o ~/.xinitrc. Se este arquivo já existir, substitua a linha que inicia o 
+gerenciador de janelas atual por uma que inicie o /usr/local/bin/gnome-session. Se este 
+arquivo não existir, crie-o com este comando:
+
+% echo "exec /usr/local/bin/gnome-session" > ~/.xinitrc
+
+Um terceiro método é usar o XDM como o gerenciador de Display. Neste caso, crie um 
+executável ~/.xsession:
+
+% echo "exec /usr/local/bin/gnome-session" > ~/.xsession
