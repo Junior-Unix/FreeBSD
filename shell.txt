@@ -1,0 +1,3 @@
+#Formato bash, fazer isso na tela "startx", antes de levantar o descktop
+
+chsh -s /bin/csh
