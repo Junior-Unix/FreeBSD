@@ -1,0 +1,5 @@
+#Desligar monitor
+xrandr --output HDMI-1 ou eDP-1 --off
+#Brilho
+xrandr --output HDMI-1 ou eDP-1 --brightness 1 ou menos tipo .7 .5 ...
+
