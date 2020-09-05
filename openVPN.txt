@@ -1,0 +1,29 @@
+Installing openvpn-2.4.9_3...
+  Edit /etc/rc.conf[.local] to start OpenVPN automatically at system
+  startup. See /usr/local/etc/rc.d/openvpn for details.
+
+  Connect to VPN server as a client with this command to include
+  the client.up/down scripts in the initialization:
+  openvpn-client <spec>.ovpn
+
+  For compatibility notes when interoperating with older OpenVPN
+  versions, please see <http://openvpn.net/relnotes.html>
+
+  Note that OpenVPN does not officially support LibreSSL.
+
+===> SECURITY REPORT: 
+      This port has installed the following files which may act as network
+      servers and may therefore pose a remote security risk to the system.
+/usr/local/sbin/openvpn
+
+      If there are vulnerabilities in these programs there may be a security
+      risk to the system. FreeBSD makes no guarantee about the security of
+      ports included in the Ports Collection. Please type 'make deinstall'
+      to deinstall the port if this is a concern.
+
+      For more information, and contact details about the security
+      status of this software, see the following webpage: 
+https://openvpn.net/index.php/open-source.html
+===>  Cleaning for easy-rsa-3.0.7
+===>  Cleaning for openvpn-2.4.9_3
+root@bot:/usr/ports/security/openvpn # 
