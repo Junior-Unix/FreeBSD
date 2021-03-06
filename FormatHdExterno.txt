@@ -1,0 +1,15 @@
+egrep 'ad[0-9]|cd[0-9]|da[0-9]' /var/run/dmesg.boot
+
+Anote o ID do disco externo. No meu caso é o da0.
+	
+At this point, it's probably a good idea to zero the drive so we start from a clean slate.
+# Limpando o disco, escrevendo 0 em todo o disco
+dd if=/dev/zero of=/dev/da0 bs=1m
+# Criando uma "label" para o HD. Chamarei ele de usb_hd
+glabel label -v usb_hd /dev/da0
+# Listando os discos presentes:
+glabel list
+# Criando uma partição ZFS (pool) chamada usb_hd_zfs no disco 
+zpool create usb_hd_zfs/dev/label/usb_hd
+# Mostrando uma lista de todos os discos com ZFS carregados no computador
+zpool status
