@@ -1,0 +1,5 @@
+# kldload coretemp
+# sysctl dev.cpu.0.temperature
+sysctl: unknown oid 'dev.cpu.0.temperature'
+# sysctl -a|grep temperature
+#
